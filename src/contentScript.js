@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
@@ -11,33 +11,50 @@
 // For more information on Content Scripts,
 // See https://developer.chrome.com/extensions/content_scripts
 
-// Log `title` of current active web page
-const pageTitle = document.head.getElementsByTagName('title')[0].innerHTML;
-console.log(
-  `Page title is: '${pageTitle}' - evaluated by Chrome extension's 'contentScript.js' file`
-);
 
-// Communicate with background file by sending a message
-chrome.runtime.sendMessage(
-  {
-    type: 'GREETINGS',
-    payload: {
-      message: 'Hello, my name is Con. I am from ContentScript.',
-    },
-  },
-  response => {
-    console.log(response.message);
+function setPlaybackRate(rate) {
+  const vid = document.querySelector("#movie_player > div.html5-video-container > video");
+  vid && (vid.playbackRate = rate);
+}
+
+function closeAd() {
+  document.querySelector("div.ytp-ad-module div.ytp-ad-image-overlay > div.ytp-ad-overlay-close-container > button")?.click();
+}
+
+let adObserver;
+
+function startAdBlocker() {
+  console.log("YouTube ad blocker re-loaded.");
+
+  let foundAd = false;
+  const interval = setInterval(() => {
+    foundAd = !!document.querySelector(".ytp-ad-player-overlay");
+    if (foundAd) {
+      setPlaybackRate(16);
+    } else {
+      setPlaybackRate(1);
+      setTimeout(() => {
+        if (!foundAd) {
+          setPlaybackRate(1);
+          clearInterval(interval);
+        }
+      }, 10000);
+    }
+  }, 100);
+
+  if (adObserver === undefined) {
+    adObserver = new MutationObserver((mutations) => {
+      console.log("Ad detected. Closing...")
+      closeAd();
+      startAdBlocker();
+    });
+    adObserver.observe(document.querySelector(".ytp-ad-module"), {
+      childList: true,
+      subtree: true,
+    });
   }
-);
+}
 
-// Listen for message
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.type === 'COUNT') {
-    console.log(`Current count is ${request.payload.count}`);
-  }
 
-  // Send an empty response
-  // See https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-531531890
-  sendResponse({});
-  return true;
-});
+window.addEventListener("load", startAdBlocker);
+startAdBlocker();

@@ -1,21 +1,16 @@
-# <img src="public/icons/icon_48.png" width="45" align="left"> Youtubeadblocker
+# YouTubeAdBlocker
 
-My Chrome Extension
+YouTubeAdBlocker is a browser extension that blocks/fast forwards ads on YouTube.
 
 ## Features
 
-- Feature 1
-- Feature 2
+- Fast forward all video interrupting ads
+- Automatically close ad banners
 
 ## Install
 
-[**Chrome** extension]()
+Download the zip from this repo and extract it. Then follow [these](https://webkul.com/blog/how-to-install-the-unpacked-extension-in-chrome/) instructions.
 
 ## Contribution
 
 Suggestions and pull requests are welcomed!.
-
----
-
-This project was bootstrapped with [Chrome Extension CLI](https://github.com/dutiyesh/chrome-extension-cli)
-
