@@ -13,4 +13,4 @@ Download the zip from this repo and extract it. Then follow [these](https://webk
 
 ## Contribution
 
-Suggestions and pull requests are welcomed!.
+Suggestions and pull requests are welcomed!

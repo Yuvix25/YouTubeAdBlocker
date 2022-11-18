@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "YouTubeAdBlocker",
   "version": "0.1.0",
-  "description": "Skips YouTube ads by playing them at x16 speed.",
+  "description": "Skips YouTube ads by playing them at x16 speed, and automatically closes ad banners.",
   "background": {
     "service_worker": "src/background.js"
   },
