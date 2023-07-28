@@ -25,7 +25,12 @@ function getPlaybackRate() {
 }
 
 function skipAd() {
-  document.querySelector(".ytp-ad-skip-button")?.click();
+  const skipButton = document.querySelector(".ytp-ad-skip-button");
+  if (skipButton) {
+    skipButton.click();
+    const { x, y } = skipButton.getBoundingClientRect();
+    chrome.runtime.sendMessage({action: "skip-ad", x: x, y: y});
+  }
 }
 
 function closeAd() {

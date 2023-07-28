@@ -15,3 +15,28 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     });
   }
 });
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.action === "skip-ad") {
+    const { x, y } = request;
+    chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", () => {
+      chrome.debugger.sendCommand({ tabId: sender.tab.id }, "Input.dispatchMouseEvent", {
+        type: "mousePressed",
+        x: x,
+        y: y,
+        button: "left",
+        clickCount: 1,
+      }, () => {
+        chrome.debugger.sendCommand({ tabId: sender.tab.id }, "Input.dispatchMouseEvent", {
+          type: "mouseReleased",
+          x: x,
+          y: y,
+          button: "left",
+          clickCount: 1,
+        }, () => {
+          chrome.debugger.detach({ tabId: sender.tab.id });
+        });
+      });
+    });
+  }
+});
