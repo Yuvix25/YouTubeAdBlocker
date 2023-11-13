@@ -25,7 +25,7 @@ function getPlaybackRate() {
 }
 
 function skipAd() {
-  const skipButton = document.querySelector(".ytp-ad-skip-button");
+  const skipButton = document.querySelector(".ytp-ad-skip-button, .ytp-ad-skip-button-modern");
   if (skipButton) {
     skipButton.click();
     const { x, y } = skipButton.getBoundingClientRect();
