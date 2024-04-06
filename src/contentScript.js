@@ -25,16 +25,23 @@ function getPlaybackRate() {
 }
 
 function skipAd() {
-  const skipButton = document.querySelector(".ytp-ad-skip-button, .ytp-ad-skip-button-modern");
-  if (skipButton) {
+  const skipButton = document.querySelector("button.ytp-skip-ad-button");
+  if (skipButton && getComputedStyle(skipButton, null).display != "none") {
+    console.log("Skipping ad...");
     skipButton.click();
-    const { x, y } = skipButton.getBoundingClientRect();
-    chrome.runtime.sendMessage({action: "skip-ad", x: x, y: y});
+    const { x, y, width, height } = skipButton.getBoundingClientRect();
+    chrome.runtime.sendMessage({action: "skip-ad", x: x + width / 2, y: y + height / 2});
+    return true;
   }
+  return false;
 }
 
 function closeAd() {
   document.querySelector("div.ytp-ad-module div.ytp-ad-image-overlay > div.ytp-ad-overlay-close-container > button")?.click();
+}
+
+function dismissYoutubePremium() {
+  document.querySelector("#dismiss-button > yt-button-shape > button")?.click();
 }
 
 let adObserver;
@@ -43,11 +50,14 @@ function startAdBlocker() {
   console.log("YouTube ad blocker re-loaded.");
 
   let foundAd = false;
+  let doSkip = true;
   const interval = setInterval(() => {
-    foundAd = !!document.querySelector(".ytp-ad-player-overlay");
+    foundAd = !!document.querySelector("div.html5-video-player.ad-showing");
     if (foundAd) {
       setPlaybackRate(16);
-      skipAd();
+      if (doSkip) {
+        doSkip = !skipAd();
+      }
     } else {
       setPlaybackRate(1);
       setTimeout(() => {
@@ -75,6 +85,7 @@ function startAdBlocker() {
         });
         clearInterval(observerInterval);
       }
+      dismissYoutubePremium();
     }, 100);
   }
 }
